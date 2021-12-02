@@ -1,0 +1,13 @@
+-- looking at the total number of people in the world that have been vaccinated
+With CTE_Example as
+(
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations, SUM(Cast(vac.new_vaccinations as int)) over (partition by dea.location order by dea.location, dea.date) as Rolling_Total_Vaccinations
+From `mh-portfolio-330001.covid_deaths.covid_deaths` dea
+JOIN `mh-portfolio-330001.covid_vaccinations.covid_vaccinations` vac
+    on dea.location = vac.location
+    and dea.date = vac.date
+where dea.continent is not null
+order by dea.location, dea.date
+)
+Select *, (Rolling_Total_Vaccinations/population)*100 as percent_of_population_vacinated
+From CTE_Example 
