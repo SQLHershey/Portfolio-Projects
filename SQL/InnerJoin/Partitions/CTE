@@ -11,3 +11,22 @@ order by dea.location, dea.date
 )
 Select *, (Rolling_Total_Vaccinations/population)*100 as percent_of_population_vacinated
 From CTE_Example 
+
+--Looking Percent Population Infected
+select Location, Population, date, Max(total_cases) as HighestInfectionCount, Max((total_cases/population))*100 as PercentPopulationInfected
+from `mh-portfolio-330001.covid_deaths.covid_deaths`
+GROUP BY Location, Population,date
+order by PercentPopulationInfected desc
+
+
+--Total Deathcount
+select location, sum(cast(new_deaths as int)) as TotalDeathCount
+from `mh-portfolio-330001.covid_deaths.covid_deaths`
+where continent is null and location not in ('World', 'European Union', 'Lower middle income', 'Low income', 'International')
+group by location
+order by TotalDeathCount desc
+
+-- Data Exploration
+SELECT location, date, total_cases, new_cases, total_deaths, population
+FROM `mh-portfolio-330001.covid_deaths.covid_deaths` 
+order by location, date
